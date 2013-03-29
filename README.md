@@ -1,11 +1,16 @@
+#Payload Events extension for Robotlegs v2
+
+***
+__NOT READY__ - depends on experimental Robotlegs 2 version
+***
 
 ```ActionScript
 //FooEvent.as
 static public const FOO : String = 'foo';
 
 public function FooEvent( type : String, ...valueObjects ){
-	super( type, valueObjects )
-		.withValueClasses( String, int );
+	super( type, valueObjects );
+	withValueClasses( String, int );
 }
 
 public function clone():Event{
