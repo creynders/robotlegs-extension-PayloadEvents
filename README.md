@@ -1,7 +1,9 @@
 #Payload Events extension for Robotlegs v2
 
+It's a signal! It's an Event! No, it's a scary mutant event-signal hybrid!
+
 ***
-__NOT READY__ - depends on experimental Robotlegs 2 version
+__NOT READY - depends on experimental Robotlegs 2 version__
 ***
 
 ```ActionScript
