@@ -12,39 +12,107 @@ package robotlegs.bender.extensions.payloadEvents.impl
 	 */
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.commandCenter.api.ICommandExecutor;
+	import robotlegs.bender.extensions.commandCenter.api.ICommandMapping;
+	import robotlegs.bender.extensions.commandCenter.api.ICommandMappingList;
+	import robotlegs.bender.extensions.commandCenter.api.ICommandTrigger;
 	import robotlegs.bender.extensions.commandCenter.impl.CommandExecutor;
 	import robotlegs.bender.extensions.eventCommandMap.impl.EventCommandTrigger;
 	import robotlegs.bender.extensions.payloadEvents.api.PayloadEvent;
+	import robotlegs.bender.framework.api.ILogger;
 
-	public class PayloadEventCommandTrigger extends EventCommandTrigger
+	public class PayloadEventCommandTrigger implements ICommandTrigger
 	{
+
+		private var _injector : Injector;
+
+		private var _base : EventCommandTrigger;
+
+		private var _dispatcher : IEventDispatcher;
 
 		/*============================================================================*/
 		/* Constructor                                                                */
 		/*============================================================================*/
 
-		public function PayloadEventCommandTrigger(injector:Injector, dispatcher:IEventDispatcher, eventType:String, eventClass:Class)
+		public function PayloadEventCommandTrigger(
+			injector:Injector,
+			dispatcher:IEventDispatcher,
+			eventType:String,
+			eventClass:Class,
+			decorator : ICommandTrigger = null)
 		{
-			super(injector, dispatcher, eventType, eventClass);
+			_base = new EventCommandTrigger(injector, dispatcher, eventType, eventClass, decorator || this);
+			_injector = injector.createChildInjector();
+			_dispatcher = dispatcher;
 		}
+
+		public function activate():void
+		{
+			_dispatcher.addEventListener( _base.eventType, handleEvent );
+			//do NOT call _base.activate, all is handled here
+		}
+
+		public function createMapping(commandClass:Class):ICommandMapping
+		{
+			return _base.createMapping(commandClass);
+		}
+
+		public function deactivate():void
+		{
+			_dispatcher.removeEventListener( _base.eventType, handleEvent );
+			//do NOT call _base.deactivate, all is handled here
+		}
+
+		public function getList():ICommandMappingList
+		{
+			return _base.getList();
+		}
+
+		public function getMappings():Vector.<ICommandMapping>
+		{
+			return _base.getMappings();
+		}
+
+		public function map(commandClass:Class):ICommandMapping
+		{
+			return _base.map(commandClass);
+		}
+
+		public function unmap(commandClass:Class):void
+		{
+			_base.unmap(commandClass);
+		}
+
+		public function unmapAll():void
+		{
+			_base.unmapAll();
+		}
+
+		public function withLogger(logger:ILogger):void
+		{
+			_base.withLogger(logger);
+		}
+
 
 		/*============================================================================*/
 		/* Protected Functions                                                        */
 		/*============================================================================*/
 
-		override protected function handleEvent(event:Event):void
+		public function handleEvent(event:Event):void
 		{
 			if (event is PayloadEvent)
 			{
 				const eventConstructor:Class = event["constructor"] as Class;
-				if (eventClass && eventClass != eventConstructor)
+				if (_base.eventClass && _base.eventClass != eventConstructor)
 				{
 					return;
 				}
 				const payloadEvent:PayloadEvent = event as PayloadEvent;
-				const executor:ICommandExecutor = new CommandExecutor(_injector)
+				const executor:ICommandExecutor = _base.createExecutor( _injector );
+				executor.withCommandClassUnmapper( unmap )
 					.withPayloadMapper(function():void {
 						var i:uint;
 						var valueObjects:Array = payloadEvent.valueObjects;
@@ -82,13 +150,12 @@ package robotlegs.bender.extensions.payloadEvents.impl
 								_injector.unmap(ctor);
 							}
 						}
-					})
-					.withCommandClassUnmapper(unmap);
+					});
 				executor.executeCommands(getMappings().concat());
 			}
 			else
 			{
-				super.handleEvent(event);
+				_base.handleEvent(event);
 			}
 		}
 	}

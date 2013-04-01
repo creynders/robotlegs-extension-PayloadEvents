@@ -15,6 +15,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 	import org.hamcrest.collection.array;
 	import org.swiftsuspenders.Injector;
 
+	import robotlegs.bender.extensions.commandCenter.impl.CommandTriggerMap;
 	import robotlegs.bender.extensions.payloadEvents.api.IPayloadEventCommandMap;
 	import robotlegs.bender.extensions.payloadEvents.support.ConfiguredPayloadEvent;
 	import robotlegs.bender.extensions.payloadEvents.support.UnconfiguredPayloadEvent;
