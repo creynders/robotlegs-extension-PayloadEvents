@@ -9,6 +9,12 @@ package robotlegs.bender.extensions.payloadEvents.api
 {
 	import flash.events.Event;
 
+	/**
+	 * Parts of code lifted ad verbatim from Robert Penner's Signal library
+	 * Copyright (c) 2009 Robert Penner
+	 *
+	 * @see https://github.com/robertpenner/as3-signals
+	 */
 	public class PayloadEvent extends Event
 	{
 
@@ -34,10 +40,13 @@ package robotlegs.bender.extensions.payloadEvents.api
 		/* Constructor                                                                */
 		/*============================================================================*/
 
-		public function PayloadEvent(type:String, valueObjects:Array)
+		public function PayloadEvent(type:String, ...valueObjects)
 		{
 			super(type)
-			_valueObjects = valueObjects;
+			// Cannot use super.apply(null, valueObjects), so allow the subclass to call super(type, valueObjects).
+			_valueObjects = (valueObjects.length == 1 && valueObjects[0] is Array)
+				? valueObjects[0]
+				: valueObjects;
 			_valueClasses && validateConfiguration();
 		}
 
@@ -57,8 +66,6 @@ package robotlegs.bender.extensions.payloadEvents.api
 
 		private function validateConfiguration():void
 		{
-			//heavily borrowed from Robert Penner's Signal
-			//https://github.com/robertpenner/as3-signals
 			if (_valueClasses && _valueClasses.length > 0)
 			{
 				if (_valueObjects.length != _valueClasses.length)
