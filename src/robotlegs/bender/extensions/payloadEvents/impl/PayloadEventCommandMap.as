@@ -19,6 +19,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 	import robotlegs.bender.extensions.commandCenter.impl.CommandTriggerMap;
 	import robotlegs.bender.extensions.payloadEvents.api.IPayloadEventCommandMap;
 	import robotlegs.bender.framework.api.IContext;
+	import robotlegs.bender.framework.api.ILogger;
 
 	public class PayloadEventCommandMap implements IPayloadEventCommandMap
 	{
@@ -36,15 +37,14 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		/*============================================================================*/
 		/* Constructor                                                                */
 		/*============================================================================*/
+		private var _logger:ILogger;
 
 		public function PayloadEventCommandMap(context:IContext, dispatcher:IEventDispatcher)
 		{
 			_injector = context.injector;
 			_dispatcher = dispatcher;
-			_triggerMap = new CommandTriggerMap()
-				.withKeyFactory(getKey)
-				.withTriggerFactory(createTrigger)
-				.withLogger(context.getLogger(this));
+			_logger = context.getLogger(this);
+			_triggerMap = new CommandTriggerMap(getKey,createTrigger);
 		}
 
 		/*============================================================================*/
@@ -53,32 +53,33 @@ package robotlegs.bender.extensions.payloadEvents.impl
 
 		public function map(eventType:String, eventClass:Class = null):ICommandMapper
 		{
-			return createMapper( eventType, eventClass );
+			return getTrigger(eventType, eventClass).createMapper();
 		}
 
 		public function unmap(eventType:String, eventClass:Class = null):ICommandUnmapper
 		{
-			return createMapper( eventType, eventClass );
+			return getTrigger(eventType, eventClass).createMapper();
 		}
 
 		/*============================================================================*/
 		/* Private Functions                                                          */
 		/*============================================================================*/
 
-		private function createMapper( eventType : String, eventClass : Class = null ) : CommandMapper{
-			var trigger : ICommandTrigger = _triggerMap.getOrCreateNewTrigger( eventType, eventClass );
-			return new CommandMapper(trigger);
-		}
-
-		private function createTrigger(eventType:String, eventClass:Class = null):ICommandTrigger
-		{
-			return new PayloadEventCommandTrigger(_injector, _dispatcher, eventType, eventClass);
-		}
-
 		private function getKey(eventType:String, eventClass:Class = null):String
 		{
 			eventClass = Event;
 			return eventType + eventClass;
 		}
+
+		private function getTrigger(type:String, eventClass:Class):PayloadEventCommandTrigger
+		{
+			return _triggerMap.getTrigger(type, eventClass) as PayloadEventCommandTrigger;
+		}
+
+		private function createTrigger(eventType:String, eventClass:Class = null):ICommandTrigger
+		{
+			return new PayloadEventCommandTrigger(_injector, _dispatcher, eventType, eventClass, _logger);
+		}
+
 	}
 }

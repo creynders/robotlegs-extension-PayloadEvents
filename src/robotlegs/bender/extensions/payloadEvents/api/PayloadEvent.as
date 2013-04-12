@@ -45,27 +45,37 @@ package robotlegs.bender.extensions.payloadEvents.api
 		/* Public Functions                                                           */
 		/*============================================================================*/
 
-		public function withValueClasses( ...valueClasses ):void
+		public function withValueClasses(... valueClasses):void
 		{
 			_valueClasses = valueClasses;
 			_valueObjects && validateConfiguration();
 		}
 
-		private function validateConfiguration() : void{
-			if( _valueClasses && _valueClasses.length > 0){
-				if(_valueObjects.length != _valueClasses.length ){
-					throw new ArgumentError('Incorrect number of arguments. '+
-						'Expected at least '+_valueClasses.length+' but received '+
-						_valueObjects.length+'.');
+		/*============================================================================*/
+		/* Private Functions                                                          */
+		/*============================================================================*/
+
+		private function validateConfiguration():void
+		{
+			//heavily borrowed from Robert Penner's Signal
+			//https://github.com/robertpenner/as3-signals
+			if (_valueClasses && _valueClasses.length > 0)
+			{
+				if (_valueObjects.length != _valueClasses.length)
+				{
+					throw new ArgumentError('Incorrect number of arguments. ' +
+						'Expected at least ' + _valueClasses.length + ' but received ' +
+						_valueObjects.length + '.');
 				}
 
-				for( var i : int = 0; i<_valueClasses.length; i++){
+				validating: for (var i:int = 0; i < _valueClasses.length; i++)
+				{
 					// Optimized for the optimistic case that values are correct.
 					if (_valueObjects[i] is _valueClasses[i] || _valueObjects[i] === null)
-						continue;
+						continue validating;
 
-					throw new ArgumentError('Value object <'+_valueObjects[i]
-						+'> is not an instance of <'+_valueClasses[i]+'>.');
+					throw new ArgumentError('Value object <' + _valueObjects[i]
+						+ '> is not an instance of <' + _valueClasses[i] + '>.');
 				}
 			}
 		}

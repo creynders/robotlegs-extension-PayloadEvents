@@ -2,20 +2,20 @@ package robotlegs.bender.extensions.payloadEvents.support
 {
 	import robotlegs.bender.extensions.payloadEvents.api.PayloadEvent;
 
-	public class UnconfiguredPayloadEvent extends PayloadEvent
+	public class LoosePayloadEvent extends PayloadEvent
 	{
 
 		/*============================================================================*/
 		/* Public Static Properties                                                   */
 		/*============================================================================*/
 
-		public static const TYPE:String = 'type';
+		public static const TYPE:String = 'LoosePayloadEvent/type';
 
 		/*============================================================================*/
 		/* Constructor                                                                */
 		/*============================================================================*/
 
-		public function UnconfiguredPayloadEvent(type:String, ... valueObjects)
+		public function LoosePayloadEvent(type:String, ... valueObjects)
 		{
 			super(type, valueObjects);
 		}
