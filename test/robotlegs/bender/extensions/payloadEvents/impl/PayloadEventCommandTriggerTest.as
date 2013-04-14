@@ -8,17 +8,17 @@
 package robotlegs.bender.extensions.payloadEvents.impl
 {
 	import flash.events.IEventDispatcher;
-	import mockolate.mock;
+
 	import mockolate.received;
 	import mockolate.runner.MockolateRule;
+
 	import org.hamcrest.assertThat;
 	import org.hamcrest.object.equalTo;
 	import org.hamcrest.object.instanceOf;
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.commandCenter.impl.CommandMapper;
-	import robotlegs.bender.extensions.payloadEvents.api.PayloadEvent;
-	import robotlegs.bender.extensions.payloadEvents.support.NullPayload;
-	import robotlegs.bender.extensions.payloadEvents.support.StrictPayloadEvent;
+	import robotlegs.bender.extensions.payloadEvents.support.OrderedExtractionPointsEvent;
 	import robotlegs.bender.framework.api.ILogger;
 
 	public class PayloadEventCommandTriggerTest
@@ -40,6 +40,9 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		[Mock]
 		public var logger:ILogger;
 
+		[Mock]
+		public var extractor:PayloadExtractor;
+
 		/*============================================================================*/
 		/* Private Properties                                                         */
 		/*============================================================================*/
@@ -55,8 +58,8 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		[Before]
 		public function setup():void
 		{
-			var eventClass:Class = PayloadEvent;
-			subject = new PayloadEventCommandTrigger(injector, dispatcher, type, eventClass, logger);
+			var eventClass:Class = OrderedExtractionPointsEvent;
+			subject = new PayloadEventCommandTrigger(injector, dispatcher, type, eventClass, extractor, logger);
 		}
 
 		/*============================================================================*/

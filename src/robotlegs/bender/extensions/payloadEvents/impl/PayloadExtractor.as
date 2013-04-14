@@ -9,7 +9,9 @@ package robotlegs.bender.extensions.payloadEvents.impl
 {
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
+
 	import flex.lang.reflect.Method;
+
 	import robotlegs.bender.extensions.payloadEvents.api.IPayloadExtractionPoint;
 	import robotlegs.bender.extensions.payloadEvents.api.PayloadExtractorError;
 	import robotlegs.bender.extensions.payloadEvents.support.OrderedExtractionPointsEvent;
@@ -36,6 +38,11 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		/*============================================================================*/
 		/* Public Functions                                                           */
 		/*============================================================================*/
+
+		public function parseDescriptionFromClass( type : Class ):PayloadExtractionDescription{
+			const factoryDescription : XML = describeType(type).factory[0];
+			return parseExtractionPoints(factoryDescription);
+		}
 
 		public function parseDescriptionFromInstance(instance:Object):PayloadExtractionDescription
 		{

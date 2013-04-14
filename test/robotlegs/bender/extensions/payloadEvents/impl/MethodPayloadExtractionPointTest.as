@@ -32,7 +32,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		{
 			var instance:ExtractableObject = new ExtractableObject();
 			subject = new MethodPayloadExtractionPoint('extractableMethod', String);
-			assertThat(subject.extract(instance), equalTo(instance.extractableMethod()));
+			assertThat(subject.extractFrom(instance), equalTo(instance.extractableMethod()));
 		}
 	}
 }

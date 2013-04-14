@@ -7,24 +7,22 @@
 
 package robotlegs.bender.extensions.payloadEvents.support
 {
-	import robotlegs.bender.extensions.payloadEvents.api.PayloadEvent;
 
-	public class LoosePayloadEvent extends PayloadEvent
+	public class ExecuteWithParametersCommand
 	{
 
-		/*============================================================================*/
-		/* Public Static Properties                                                   */
-		/*============================================================================*/
-
-		public static const TYPE:String = 'LoosePayloadEvent/type';
+		[Inject(name='reportingFunction')]
+		public var reportingFunc:Function;
 
 		/*============================================================================*/
-		/* Constructor                                                                */
+		/* Public Functions                                                           */
 		/*============================================================================*/
 
-		public function LoosePayloadEvent(type:String, ... valueObjects)
+		public function execute(passedString:String, passedPayload:IPayload, passedObject:Object):void
 		{
-			super(type, valueObjects);
+			reportingFunc(passedString);
+			reportingFunc(passedPayload);
+			reportingFunc(passedObject);
 		}
 	}
 }

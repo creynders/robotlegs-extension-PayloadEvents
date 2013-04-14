@@ -34,6 +34,8 @@ package robotlegs.bender.extensions.payloadEvents.impl
 
 		private var _dispatcher:IEventDispatcher;
 
+		private var _payloadExtractor : PayloadExtractor;
+
 		/*============================================================================*/
 		/* Constructor                                                                */
 		/*============================================================================*/
@@ -45,6 +47,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 			_dispatcher = dispatcher;
 			_logger = context.getLogger(this);
 			_triggerMap = new CommandTriggerMap(getKey,createTrigger);
+			_payloadExtractor = new PayloadExtractor();
 		}
 
 		/*============================================================================*/
@@ -78,7 +81,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 
 		private function createTrigger(eventType:String, eventClass:Class = null):ICommandTrigger
 		{
-			return new PayloadEventCommandTrigger(_injector, _dispatcher, eventType, eventClass, _logger);
+			return new PayloadEventCommandTrigger(_injector, _dispatcher, eventType, eventClass, _payloadExtractor, _logger);
 		}
 
 	}

@@ -39,7 +39,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		{
 			var instance:ExtractableObject = new ExtractableObject();
 			subject = new FieldPayloadExtractionPoint('extractableProperty', String);
-			assertThat(subject.extract(instance), equalTo(instance.extractableProperty));
+			assertThat(subject.extractFrom(instance), equalTo(instance.extractableProperty));
 		}
 
 		[Test]
@@ -47,7 +47,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		{
 			var instance:ExtractableObject = new ExtractableObject();
 			subject = new FieldPayloadExtractionPoint('extractableGetter', String);
-			assertThat(subject.extract(instance), equalTo(instance.extractableGetter));
+			assertThat(subject.extractFrom(instance), equalTo(instance.extractableGetter));
 		}
 	}
 }

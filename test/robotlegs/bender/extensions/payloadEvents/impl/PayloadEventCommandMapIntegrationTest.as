@@ -11,7 +11,6 @@ package robotlegs.bender.extensions.payloadEvents.impl
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 
-	import org.flexunit.asserts.assertTrue;
 	import org.hamcrest.assertThat;
 	import org.hamcrest.collection.array;
 	import org.hamcrest.core.not;
@@ -21,15 +20,13 @@ package robotlegs.bender.extensions.payloadEvents.impl
 
 	import robotlegs.bender.extensions.commandCenter.dsl.ICommandMapper;
 	import robotlegs.bender.extensions.commandCenter.dsl.ICommandUnmapper;
-	import robotlegs.bender.extensions.commandCenter.impl.CommandMapper;
-	import robotlegs.bender.extensions.commandCenter.impl.CommandTriggerMap;
 	import robotlegs.bender.extensions.payloadEvents.api.IPayloadEventCommandMap;
 	import robotlegs.bender.extensions.payloadEvents.support.ClassReportingCommand;
 	import robotlegs.bender.extensions.payloadEvents.support.EventReportingCommand;
-	import robotlegs.bender.extensions.payloadEvents.support.LoosePayloadEvent;
-	import robotlegs.bender.extensions.payloadEvents.support.NullCommand;
+	import robotlegs.bender.extensions.payloadEvents.support.ExecuteWithParametersCommand;
+	import robotlegs.bender.extensions.payloadEvents.support.InjectionPointsCommand;
 	import robotlegs.bender.extensions.payloadEvents.support.NullPayload;
-	import robotlegs.bender.extensions.payloadEvents.support.StrictPayloadEvent;
+	import robotlegs.bender.extensions.payloadEvents.support.OrderedExtractionPointsEvent;
 	import robotlegs.bender.extensions.payloadEvents.support.SupportEvent;
 	import robotlegs.bender.framework.api.IContext;
 	import robotlegs.bender.framework.impl.Context;
@@ -69,23 +66,23 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		/*============================================================================*/
 
 		[Test]
-		public function test_map_returns_mapper() : void{
+		public function map_returns_mapper() : void{
 			assertThat(subject.map(SupportEvent.TYPE),instanceOf(ICommandMapper));
 		}
 
 		[Test]
-		public function test_unmap_returns_unmapper() : void{
+		public function unmap_returns_unmapper() : void{
 			assertThat(subject.unmap(SupportEvent.TYPE),instanceOf(ICommandUnmapper));
 		}
 
 		[Test]
-		public function test_map_returns_new_mapper_for_same_event() : void{
+		public function map_returns_new_mapper_for_same_event() : void{
 			var oldMapper : ICommandMapper = subject.map(SupportEvent.TYPE);
 			assertThat(subject.map(SupportEvent.TYPE), not(equalTo(oldMapper)));
 		}
 
 		[Test]
-		public function test_commands_are_executed() : void{
+		public function commands_are_executed() : void{
 			subject.map(SupportEvent.TYPE).toCommand(ClassReportingCommand);
 
 			dispatcher.dispatchEvent(new SupportEvent(SupportEvent.TYPE));
@@ -94,31 +91,29 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		}
 
 		[Test]
-		public function test_strict_payload_is_injected_into_commands():void
-		{
-			const foo:String = 'payload';
-			const bar:NullPayload = new NullPayload();
-			subject.map(StrictPayloadEvent.TYPE).toCommand(CommandWithInjectionPoints);
+		public function payload_is_injected() : void{
+			subject.map(OrderedExtractionPointsEvent.TYPE,OrderedExtractionPointsEvent).toCommand(InjectionPointsCommand);
+			const event : OrderedExtractionPointsEvent = new OrderedExtractionPointsEvent();
 
-			dispatcher.dispatchEvent(new StrictPayloadEvent(StrictPayloadEvent.TYPE, foo, bar));
+			dispatcher.dispatchEvent(event);
 
-			assertThat(reported, array(foo, bar));
+			assertThat(reported,array(
+				event.extractTaggedProperty,event.extractTaggedGetter,event.extractTaggedMethod()));
 		}
 
 		[Test]
-		public function test_loose_payload_values_are_mapped_to_concrete_classes():void
-		{
-			const concretePayload:NullPayload = new NullPayload();
-			subject.map(LoosePayloadEvent.TYPE).toCommand(CommandWithConcreteInjectionPoints);
+		public function payload_is_passed_to_execute_in_order() : void{
+			subject.map(OrderedExtractionPointsEvent.TYPE,OrderedExtractionPointsEvent).toCommand(ExecuteWithParametersCommand);
+			const event : OrderedExtractionPointsEvent = new OrderedExtractionPointsEvent();
 
-			dispatcher.dispatchEvent(new LoosePayloadEvent(LoosePayloadEvent.TYPE,concretePayload));
+			dispatcher.dispatchEvent(event);
 
-			assertThat(reported,array(concretePayload));
+			assertThat(reported,array(
+				event.extractTaggedProperty,event.extractTaggedMethod(),event.extractTaggedGetter));
 		}
 
 		[Test]
-		public function test_falls_back_to_normal_eventCommandMap_behaviour_when_not_payloadEvent():void
-		{
+		public function test_event_is_injected_when_no_payload_dispatched() : void{
 			subject.map(SupportEvent.TYPE).toCommand(EventReportingCommand);
 			var event:Event = new SupportEvent(SupportEvent.TYPE);
 
@@ -128,18 +123,8 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		}
 
 		[Test]
-		public function test_event_is_injected_when_no_payload_dispatched() : void{
-			subject.map(LoosePayloadEvent.TYPE).toCommand(EventReportingCommand);
-			var event:Event = new LoosePayloadEvent(LoosePayloadEvent.TYPE);
-
-			dispatcher.dispatchEvent(event);
-
-			assertThat(reported, array(event));
-		}
-
-		[Test]
 		public function test_command_does_not_execute_when_incorrect_eventClass_dispatched() : void{
-			subject.map(SupportEvent.TYPE,LoosePayloadEvent).toCommand(ClassReportingCommand);
+			subject.map(SupportEvent.TYPE,Event).toCommand(ClassReportingCommand);
 
 			dispatcher.dispatchEvent(new SupportEvent(SupportEvent.TYPE));
 

@@ -14,6 +14,6 @@ package robotlegs.bender.extensions.payloadEvents.api
 		function get valueType():Class;
 		function get ordinal():int;
 
-		function extract(instance:Object):*;
+		function extractFrom(instance:Object):*;
 	}
 }

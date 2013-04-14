@@ -12,24 +12,25 @@ package robotlegs.bender.extensions.payloadEvents.impl
 	 */
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
-
 	import org.swiftsuspenders.Injector;
-
 	import robotlegs.bender.extensions.commandCenter.api.ICommandExecutor;
-	import robotlegs.bender.extensions.commandCenter.api.ICommandMapping;
 	import robotlegs.bender.extensions.commandCenter.api.ICommandMappingList;
 	import robotlegs.bender.extensions.commandCenter.api.ICommandTrigger;
 	import robotlegs.bender.extensions.commandCenter.impl.CommandExecutor;
 	import robotlegs.bender.extensions.commandCenter.impl.CommandMapper;
 	import robotlegs.bender.extensions.commandCenter.impl.CommandMappingList;
 	import robotlegs.bender.extensions.commandCenter.impl.CommandPayload;
-	import robotlegs.bender.extensions.payloadEvents.api.PayloadEvent;
+	import robotlegs.bender.extensions.payloadEvents.api.IPayloadExtractionPoint;
 	import robotlegs.bender.framework.api.ILogger;
 
 	public class PayloadEventCommandTrigger implements ICommandTrigger
 	{
 
-		private var _dispatcher : IEventDispatcher;
+		/*============================================================================*/
+		/* Private Properties                                                         */
+		/*============================================================================*/
+
+		private var _dispatcher:IEventDispatcher;
 
 		private var _type:String;
 
@@ -39,7 +40,11 @@ package robotlegs.bender.extensions.payloadEvents.impl
 
 		private var _mappings:ICommandMappingList;
 
-		private var _executor: ICommandExecutor;
+		private var _executor:ICommandExecutor;
+
+		private var _extractionDescription:PayloadExtractionDescription;
+
+		private var _payloadExtractor:PayloadExtractor;
 
 		/*============================================================================*/
 		/* Constructor                                                                */
@@ -50,15 +55,22 @@ package robotlegs.bender.extensions.payloadEvents.impl
 			dispatcher:IEventDispatcher,
 			eventType:String,
 			eventClass:Class,
-			logger : ILogger= null)
+			payloadExtractor:PayloadExtractor,
+			logger:ILogger = null)
 		{
 			_injector = injector.createChildInjector();
 			_dispatcher = dispatcher;
 			_type = eventType;
 			_eventClass = eventClass;
+			_payloadExtractor = payloadExtractor;
 			_mappings = new CommandMappingList(this, logger);
-			_executor = new CommandExecutor(_injector,_mappings.removeMapping);
+			_executor = new CommandExecutor(_injector, _mappings.removeMapping);
+			eventClass && (_extractionDescription = _payloadExtractor.parseDescriptionFromClass(_eventClass));
 		}
+
+		/*============================================================================*/
+		/* Public Functions                                                           */
+		/*============================================================================*/
 
 		public function createMapper():CommandMapper
 		{
@@ -80,10 +92,6 @@ package robotlegs.bender.extensions.payloadEvents.impl
 			return _eventClass + " with selector '" + _type + "'";
 		}
 
-		/*============================================================================*/
-		/* Protected Functions                                                        */
-		/*============================================================================*/
-
 		public function eventHandler(event:Event):void
 		{
 			const eventConstructor:Class = event["constructor"] as Class;
@@ -91,19 +99,24 @@ package robotlegs.bender.extensions.payloadEvents.impl
 			{
 				return;
 			}
-			var payload : CommandPayload;
-			const payloadEvent : PayloadEvent = event as PayloadEvent;
-			if( payloadEvent && payloadEvent.valueObjects && payloadEvent.valueObjects.length > 0){
-				var valueClasses : Array = payloadEvent.valueClasses;
-				if( ! valueClasses || valueClasses.length == 0 ){
-					for (var i:int = 0; i <payloadEvent.valueObjects.length; i++)
-					{
-						const ctor:Class = payloadEvent.valueObjects[i]['constructor'] as Class;
-						_injector.map(ctor).toValue(payloadEvent.valueObjects[i]);
-					}
+			var payload:CommandPayload;
+
+			_extractionDescription ||= _payloadExtractor.parseDescriptionFromInstance(event);
+
+			if (_extractionDescription.numPoints > 0)
+			{
+				payload = new CommandPayload();
+				var i:int;
+				var n:int = _extractionDescription.numPoints
+				for (i = 0; i < n; i++)
+				{
+					var extractionPoint:IPayloadExtractionPoint = _extractionDescription.extractionPoints[i];
+					payload.addPayload(extractionPoint.extractFrom(event), extractionPoint.valueType);
 				}
-				payload = new CommandPayload( payloadEvent.valueObjects, valueClasses );
-			}else{
+
+			}
+			else
+			{
 				payload = new CommandPayload([event], [Event]);
 				if (eventConstructor != Event)
 					payload.addPayload(event, _eventClass || eventConstructor);

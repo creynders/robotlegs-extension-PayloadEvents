@@ -7,9 +7,7 @@
 
 package robotlegs.bender.extensions.payloadEvents
 {
-	import robotlegs.bender.extensions.payloadEvents.api.PayloadEventTest;
 	import robotlegs.bender.extensions.payloadEvents.impl.FieldPayloadExtractionPointTest;
-	import robotlegs.bender.extensions.payloadEvents.impl.MethodPayloadExtractionPoint;
 	import robotlegs.bender.extensions.payloadEvents.impl.MethodPayloadExtractionPointTest;
 	import robotlegs.bender.extensions.payloadEvents.impl.PayloadEventCommandMapIntegrationTest;
 	import robotlegs.bender.extensions.payloadEvents.impl.PayloadEventCommandTriggerTest;
@@ -25,8 +23,6 @@ package robotlegs.bender.extensions.payloadEvents
 		/*============================================================================*/
 
 		public var payloadEventsExtension:PayloadEventsExtensionTest;
-
-		public var payloadEvent:PayloadEventTest;
 
 		public var payloadEventCommandTrigger:PayloadEventCommandTriggerTest;
 

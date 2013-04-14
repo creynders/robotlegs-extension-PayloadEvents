@@ -202,7 +202,7 @@ class ExtractMethodWithVoidReturnTypeEvent extends Event
 	/*============================================================================*/
 
 	[Extract]
-	public function methodWithParameters():void
+	public function methodWithVoidReturnType():void
 	{
 	}
 }

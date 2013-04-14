@@ -12,20 +12,32 @@ package robotlegs.bender.extensions.payloadEvents.support
 	public class OrderedExtractionPointsEvent extends Event
 	{
 
-		static public const TYPE : String = 'ExtractionPointsEvent/TYPE';
+		/*============================================================================*/
+		/* Public Static Properties                                                   */
+		/*============================================================================*/
+
+		public static const TYPE:String = 'ExtractionPointsEvent/TYPE';
 
 		/*============================================================================*/
 		/* Public Properties                                                          */
 		/*============================================================================*/
 
 		[Extract(order=1)]
-		public var extractTaggedProperty:String;
+		public var extractTaggedProperty:String = 'extractTaggedProperty';
 
 		[Extract(order=3)]
 		public function get extractTaggedGetter():Object
 		{
-			return {};
+			return extractTaggedGetterValue;
 		}
+
+		/*============================================================================*/
+		/* Private Properties                                                         */
+		/*============================================================================*/
+
+		private var extractTaggedGetterValue:Object = {};
+
+		private var extractTaggedMethodValue:IPayload = new NullPayload();
 
 		/*============================================================================*/
 		/* Constructor                                                                */
@@ -43,7 +55,7 @@ package robotlegs.bender.extensions.payloadEvents.support
 		[Extract(order=2)]
 		public function extractTaggedMethod():IPayload
 		{
-			return new NullPayload();
+			return extractTaggedMethodValue;
 		}
 	}
 }

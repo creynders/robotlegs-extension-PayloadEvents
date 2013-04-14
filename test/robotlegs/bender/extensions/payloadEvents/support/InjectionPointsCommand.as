@@ -7,25 +7,35 @@
 
 package robotlegs.bender.extensions.payloadEvents.support
 {
-	import robotlegs.bender.extensions.payloadEvents.api.PayloadEvent;
 
-	public class StrictPayloadEvent extends PayloadEvent
+	public class InjectionPointsCommand
 	{
 
 		/*============================================================================*/
-		/* Public Static Properties                                                   */
+		/* Public Properties                                                          */
 		/*============================================================================*/
 
-		public static const TYPE:String = 'StrictPayloadEvent/type';
+		[Inject(name='reportingFunction')]
+		public var reportingFunc:Function;
+
+		[Inject]
+		public var injectedStringValue:String;
+
+		[Inject]
+		public var injectedObjectValue:Object;
+
+		[Inject]
+		public var injectedPayloadValue:IPayload;
 
 		/*============================================================================*/
-		/* Constructor                                                                */
+		/* Public Functions                                                           */
 		/*============================================================================*/
 
-		public function StrictPayloadEvent(type:String, p1:String, p2:IPayload)
+		public function execute():void
 		{
-			super(type, p1, p2);
-			withValueClasses(String, IPayload);
+			reportingFunc(injectedStringValue);
+			reportingFunc(injectedObjectValue);
+			reportingFunc(injectedPayloadValue);
 		}
 	}
 }

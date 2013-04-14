@@ -52,7 +52,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		/* Public Functions                                                           */
 		/*============================================================================*/
 
-		public function extract(instance:Object):*
+		public function extractFrom(instance:Object):*
 		{
 			return instance[_memberName]();
 		}
