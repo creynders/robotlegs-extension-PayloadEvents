@@ -20,6 +20,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 	import robotlegs.bender.extensions.commandCenter.impl.CommandMapper;
 	import robotlegs.bender.extensions.payloadEvents.support.OrderedExtractionPointsEvent;
 	import robotlegs.bender.framework.api.ILogger;
+	import robotlegs.bender.extensions.payloadEvents.impl.extraction.PayloadReflector;
 
 	public class PayloadEventCommandTriggerTest
 	{
@@ -41,7 +42,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		public var logger:ILogger;
 
 		[Mock]
-		public var extractor:PayloadExtractor;
+		public var extractor:PayloadReflector;
 
 		/*============================================================================*/
 		/* Private Properties                                                         */

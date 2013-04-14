@@ -20,6 +20,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 	import robotlegs.bender.extensions.payloadEvents.api.IPayloadEventCommandMap;
 	import robotlegs.bender.framework.api.IContext;
 	import robotlegs.bender.framework.api.ILogger;
+	import robotlegs.bender.extensions.payloadEvents.impl.extraction.PayloadReflector;
 
 	public class PayloadEventCommandMap implements IPayloadEventCommandMap
 	{
@@ -34,7 +35,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 
 		private var _dispatcher:IEventDispatcher;
 
-		private var _payloadExtractor : PayloadExtractor;
+		private var _payloadExtractor : PayloadReflector;
 
 		/*============================================================================*/
 		/* Constructor                                                                */
@@ -47,7 +48,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 			_dispatcher = dispatcher;
 			_logger = context.getLogger(this);
 			_triggerMap = new CommandTriggerMap(getKey,createTrigger);
-			_payloadExtractor = new PayloadExtractor();
+			_payloadExtractor = new PayloadReflector();
 		}
 
 		/*============================================================================*/

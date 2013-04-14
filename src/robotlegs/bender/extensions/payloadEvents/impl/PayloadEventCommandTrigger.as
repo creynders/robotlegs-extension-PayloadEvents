@@ -22,6 +22,8 @@ package robotlegs.bender.extensions.payloadEvents.impl
 	import robotlegs.bender.extensions.commandCenter.impl.CommandPayload;
 	import robotlegs.bender.extensions.payloadEvents.api.IPayloadExtractionPoint;
 	import robotlegs.bender.framework.api.ILogger;
+	import robotlegs.bender.extensions.payloadEvents.impl.extraction.PayloadExtractionDescription;
+	import robotlegs.bender.extensions.payloadEvents.impl.extraction.PayloadReflector;
 
 	public class PayloadEventCommandTrigger implements ICommandTrigger
 	{
@@ -44,7 +46,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 
 		private var _extractionDescription:PayloadExtractionDescription;
 
-		private var _payloadExtractor:PayloadExtractor;
+		private var _payloadReflector:PayloadReflector;
 
 		/*============================================================================*/
 		/* Constructor                                                                */
@@ -55,17 +57,17 @@ package robotlegs.bender.extensions.payloadEvents.impl
 			dispatcher:IEventDispatcher,
 			eventType:String,
 			eventClass:Class,
-			payloadExtractor:PayloadExtractor,
+			payloadExtractor:PayloadReflector,
 			logger:ILogger = null)
 		{
 			_injector = injector.createChildInjector();
 			_dispatcher = dispatcher;
 			_type = eventType;
 			_eventClass = eventClass;
-			_payloadExtractor = payloadExtractor;
+			_payloadReflector = payloadExtractor;
 			_mappings = new CommandMappingList(this, logger);
 			_executor = new CommandExecutor(_injector, _mappings.removeMapping);
-			eventClass && (_extractionDescription = _payloadExtractor.parseDescriptionFromClass(_eventClass));
+			eventClass && (_extractionDescription = _payloadReflector.describeExtractionsForClass(_eventClass));
 		}
 
 		/*============================================================================*/
@@ -101,7 +103,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 			}
 			var payload:CommandPayload;
 
-			_extractionDescription ||= _payloadExtractor.parseDescriptionFromInstance(event);
+			_extractionDescription ||= _payloadReflector.describeExtractionsForInstance(event);
 
 			if (_extractionDescription.numPoints > 0)
 			{

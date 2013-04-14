@@ -5,7 +5,7 @@
 //  in accordance with the terms of the license agreement accompanying it.
 //------------------------------------------------------------------------------
 
-package robotlegs.bender.extensions.payloadEvents.impl
+package robotlegs.bender.extensions.payloadEvents.impl.extraction
 {
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
@@ -17,7 +17,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 	import robotlegs.bender.extensions.payloadEvents.support.OrderedExtractionPointsEvent;
 	import robotlegs.bender.framework.api.ILogger;
 
-	public class PayloadExtractor
+	public class PayloadReflector
 	{
 
 		/*============================================================================*/
@@ -30,7 +30,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		/* Constructor                                                                */
 		/*============================================================================*/
 
-		public function PayloadExtractor(logger:ILogger = null)
+		public function PayloadReflector(logger:ILogger = null)
 		{
 			_logger = logger;
 		}
@@ -39,12 +39,12 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		/* Public Functions                                                           */
 		/*============================================================================*/
 
-		public function parseDescriptionFromClass( type : Class ):PayloadExtractionDescription{
+		public function describeExtractionsForClass( type : Class ):PayloadExtractionDescription{
 			const factoryDescription : XML = describeType(type).factory[0];
 			return parseExtractionPoints(factoryDescription);
 		}
 
-		public function parseDescriptionFromInstance(instance:Object):PayloadExtractionDescription
+		public function describeExtractionsForInstance(instance:Object):PayloadExtractionDescription
 		{
 			return parseExtractionPoints(describeType(instance));
 		}

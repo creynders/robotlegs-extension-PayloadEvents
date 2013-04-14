@@ -1,11 +1,18 @@
-package robotlegs.bender.extensions.payloadEvents.impl
+//------------------------------------------------------------------------------
+//  Copyright (c) 2009-2013 the original author or authors. All Rights Reserved.
+//
+//  NOTICE: You are permitted to use, modify, and distribute this file
+//  in accordance with the terms of the license agreement accompanying it.
+//------------------------------------------------------------------------------
+
+package robotlegs.bender.extensions.payloadEvents.impl.extraction
 {
 	import flash.text.StaticText;
 	import org.hamcrest.assertThat;
 	import org.hamcrest.object.equalTo;
 	import robotlegs.bender.extensions.payloadEvents.api.IPayloadExtractionPoint;
 
-	public class MethodPayloadExtractionPointTest
+	public class FieldPayloadExtractionPointTest
 	{
 
 		/*============================================================================*/
@@ -28,11 +35,19 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		/*============================================================================*/
 
 		[Test]
-		public function extracts_value_from_method():void
+		public function extracts_value_from_property():void
 		{
 			var instance:ExtractableObject = new ExtractableObject();
-			subject = new MethodPayloadExtractionPoint('extractableMethod', String);
-			assertThat(subject.extractFrom(instance), equalTo(instance.extractableMethod()));
+			subject = new FieldPayloadExtractionPoint('extractableProperty', String);
+			assertThat(subject.extractFrom(instance), equalTo(instance.extractableProperty));
+		}
+
+		[Test]
+		public function extracts_value_from_getter():void
+		{
+			var instance:ExtractableObject = new ExtractableObject();
+			subject = new FieldPayloadExtractionPoint('extractableGetter', String);
+			assertThat(subject.extractFrom(instance), equalTo(instance.extractableGetter));
 		}
 	}
 }
@@ -44,8 +59,10 @@ class ExtractableObject
 	/* Public Properties                                                          */
 	/*============================================================================*/
 
-	public function extractableMethod():String
+	public var extractableProperty:String = 'extractableProperty';
+
+	public function get extractableGetter():String
 	{
-		return 'extractableMethod';
+		return 'extractableGetter';
 	}
 }

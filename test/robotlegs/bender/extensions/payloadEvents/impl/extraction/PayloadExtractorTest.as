@@ -5,7 +5,7 @@
 //  in accordance with the terms of the license agreement accompanying it.
 //------------------------------------------------------------------------------
 
-package robotlegs.bender.extensions.payloadEvents.impl
+package robotlegs.bender.extensions.payloadEvents.impl.extraction
 {
 	import mockolate.runner.MockolateRule;
 
@@ -38,7 +38,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		/* Private Properties                                                         */
 		/*============================================================================*/
 
-		private var subject:PayloadExtractor;
+		private var subject:PayloadReflector;
 
 		private var extractedPropertyDescription:IPayloadExtractionPoint;
 
@@ -53,7 +53,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		[Before]
 		public function setup():void
 		{
-			subject = new PayloadExtractor(logger);
+			subject = new PayloadReflector(logger);
 		}
 
 		/*============================================================================*/
@@ -63,20 +63,20 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		[Test]
 		public function parseDescriptionFromInstance_returns_descriptor():void
 		{
-			assertThat(subject.parseDescriptionFromInstance({}), instanceOf(PayloadExtractionDescription));
+			assertThat(subject.describeExtractionsForInstance({}), instanceOf(PayloadExtractionDescription));
 		}
 
 		[Test]
 		public function parses_mapping_id():void
 		{
-			const description:PayloadExtractionDescription = subject.parseDescriptionFromInstance(new OrderedExtractionPointsEvent());
+			const description:PayloadExtractionDescription = subject.describeExtractionsForInstance(new OrderedExtractionPointsEvent());
 			assertThat(description.mappingId, equalTo('robotlegs.bender.extensions.payloadEvents.support::OrderedExtractionPointsEvent'));
 		}
 
 		[Test]
 		public function parses_properties():void
 		{
-			const description:PayloadExtractionDescription = subject.parseDescriptionFromInstance(new ExtractablePropertyEvent());
+			const description:PayloadExtractionDescription = subject.describeExtractionsForInstance(new ExtractablePropertyEvent());
 			const point:IPayloadExtractionPoint = description.extractionPoints[0];
 			assertThat(point.memberName, equalTo('extractTaggedProperty'));
 			assertThat(point.valueType, equalTo(String));
@@ -86,7 +86,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		[Test]
 		public function parses_getters():void
 		{
-			const description:PayloadExtractionDescription = subject.parseDescriptionFromInstance(new ExtractableGetterEvent());
+			const description:PayloadExtractionDescription = subject.describeExtractionsForInstance(new ExtractableGetterEvent());
 			const point:IPayloadExtractionPoint = description.extractionPoints[0];
 			assertThat(point.memberName, equalTo('extractTaggedGetter'));
 			assertThat(point.valueType, equalTo(Object));
@@ -96,7 +96,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		[Test]
 		public function parses_methods():void
 		{
-			const description:PayloadExtractionDescription = subject.parseDescriptionFromInstance(new ExtractableMethodEvent());
+			const description:PayloadExtractionDescription = subject.describeExtractionsForInstance(new ExtractableMethodEvent());
 			const point:IPayloadExtractionPoint = description.extractionPoints[0];
 			assertThat(point.memberName, equalTo('extractTaggedMethod'));
 			assertThat(point.valueType, equalTo(IPayload));
@@ -106,27 +106,27 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		[Test(expects="robotlegs.bender.extensions.payloadEvents.api.PayloadExtractorError")]
 		public function setter_throws_error():void
 		{
-			subject.parseDescriptionFromInstance(new ExtractSetterEvent());
+			subject.describeExtractionsForInstance(new ExtractSetterEvent());
 			// note: no assertion. we just want to know if an error is thrown
 		}
 
 		[Test(expects="robotlegs.bender.extensions.payloadEvents.api.PayloadExtractorError")]
 		public function method_with_parameters_throws_error():void
 		{
-			subject.parseDescriptionFromInstance(new ExtractMethodWithParametersEvent());
+			subject.describeExtractionsForInstance(new ExtractMethodWithParametersEvent());
 			// note: no assertion. we just want to know if an error is thrown
 		}
 
 		[Test(expects="robotlegs.bender.extensions.payloadEvents.api.PayloadExtractorError")]
 		public function method_with_void_return_type_throws_error():void
 		{
-			subject.parseDescriptionFromInstance(new ExtractMethodWithVoidReturnTypeEvent());
+			subject.describeExtractionsForInstance(new ExtractMethodWithVoidReturnTypeEvent());
 			// note: no assertion. we just want to know if an error is thrown
 		}
 
 		[Test]
 		public function points_are_ordered_when_tagged_with_order() : void{
-			const description:PayloadExtractionDescription = subject.parseDescriptionFromInstance(new OrderedExtractionPointsEvent());
+			const description:PayloadExtractionDescription = subject.describeExtractionsForInstance(new OrderedExtractionPointsEvent());
 			const p0:IPayloadExtractionPoint = description.extractionPoints[0];
 			const p1:IPayloadExtractionPoint = description.extractionPoints[1];
 			const p2:IPayloadExtractionPoint = description.extractionPoints[2];

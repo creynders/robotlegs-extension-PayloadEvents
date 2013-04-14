@@ -5,7 +5,7 @@
 //  in accordance with the terms of the license agreement accompanying it.
 //------------------------------------------------------------------------------
 
-package robotlegs.bender.extensions.payloadEvents.impl
+package robotlegs.bender.extensions.payloadEvents.impl.extraction
 {
 	import robotlegs.bender.extensions.payloadEvents.api.IPayloadExtractionPoint;
 
