@@ -7,9 +7,8 @@
 
 package robotlegs.bender.extensions.payloadEvents.support
 {
-	import robotlegs.bender.extensions.commandCenter.api.ICommand;
 
-	public class ClassReportingCommand implements ICommand
+	public class ExecuteTaggedClassReportingMethodCommand
 	{
 
 		/*============================================================================*/
@@ -23,9 +22,10 @@ package robotlegs.bender.extensions.payloadEvents.support
 		/* Public Functions                                                           */
 		/*============================================================================*/
 
-		public function execute():void
+		[Execute]
+		public function report():void
 		{
-			reportingFunc(ClassReportingCommand);
+			reportingFunc(ExecuteTaggedClassReportingMethodCommand);
 		}
 	}
 }

@@ -1,0 +1,115 @@
+//------------------------------------------------------------------------------
+//  Copyright (c) 2009-2013 the original author or authors. All Rights Reserved.
+//
+//  NOTICE: You are permitted to use, modify, and distribute this file
+//  in accordance with the terms of the license agreement accompanying it.
+//------------------------------------------------------------------------------
+
+package robotlegs.bender.extensions.payloadEvents.impl
+{
+	import robotlegs.bender.extensions.commandCenter.api.ICommandMapping;
+	import robotlegs.bender.extensions.commandCenter.api.ICommandMappingList;
+	import robotlegs.bender.extensions.commandCenter.dsl.ICommandConfigurator;
+	import robotlegs.bender.extensions.commandCenter.dsl.ICommandMapper;
+	import robotlegs.bender.extensions.commandCenter.dsl.ICommandUnmapper;
+	import robotlegs.bender.extensions.commandCenter.impl.CommandMapping;
+	import robotlegs.bender.extensions.payloadEvents.impl.execution.ExecutionReflector;
+
+	public class PayloadEventCommandMapper implements ICommandMapper, ICommandUnmapper, ICommandConfigurator
+	{
+
+		/*============================================================================*/
+		/* Private Properties                                                         */
+		/*============================================================================*/
+
+		private var _mappings:ICommandMappingList;
+
+		private var _mapping:ICommandMapping;
+
+		private var _executeReflector:ExecutionReflector;
+
+		/*============================================================================*/
+		/* Constructor                                                                */
+		/*============================================================================*/
+
+		public function PayloadEventCommandMapper(mappings : ICommandMappingList)
+		{
+			_mappings = mappings;
+			_executeReflector = new ExecutionReflector();
+		}
+
+		/*============================================================================*/
+		/* Public Functions                                                           */
+		/*============================================================================*/
+
+		public function toCommand(commandClass:Class):ICommandConfigurator
+		{
+			_mapping = new CommandMapping(commandClass);
+			const executeMethod:String = _executeReflector.describeExecutionMethodForClass(commandClass);
+			executeMethod && _mapping.setExecuteMethod(executeMethod);
+			_mappings.addMapping(_mapping);
+			return this;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function fromCommand(commandClass:Class):void
+		{
+			_mappings.removeMappingFor(commandClass);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function fromAll():void
+		{
+			_mappings.removeAllMappings();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function once(value:Boolean = true):ICommandConfigurator
+		{
+			_mapping.setFireOnce(value);
+			return this;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function withGuards(... guards):ICommandConfigurator
+		{
+			_mapping.addGuards.apply(null, guards);
+			return this;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function withHooks(... hooks):ICommandConfigurator
+		{
+			_mapping.addHooks.apply(null, hooks);
+			return this;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function withExecuteMethod(name:String):ICommandConfigurator
+		{
+			_mapping.setExecuteMethod(name);
+			return this;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function withPayloadInjection(value:Boolean = true):ICommandConfigurator
+		{
+			_mapping.setPayloadInjectionEnabled(value);
+			return this;
+		}
+	}
+}

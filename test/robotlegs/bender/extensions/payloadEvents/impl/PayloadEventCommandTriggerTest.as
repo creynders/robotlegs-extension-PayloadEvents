@@ -18,9 +18,9 @@ package robotlegs.bender.extensions.payloadEvents.impl
 	import org.swiftsuspenders.Injector;
 
 	import robotlegs.bender.extensions.commandCenter.impl.CommandMapper;
+	import robotlegs.bender.extensions.payloadEvents.impl.extraction.PayloadReflector;
 	import robotlegs.bender.extensions.payloadEvents.support.OrderedExtractionPointsEvent;
 	import robotlegs.bender.framework.api.ILogger;
-	import robotlegs.bender.extensions.payloadEvents.impl.extraction.PayloadReflector;
 
 	public class PayloadEventCommandTriggerTest
 	{
@@ -72,7 +72,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		{
 			var actual:Object = subject.createMapper();
 
-			assertThat(actual, instanceOf(CommandMapper));
+			assertThat(actual, instanceOf(PayloadEventCommandMapper));
 		}
 
 		[Test]

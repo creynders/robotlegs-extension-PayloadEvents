@@ -7,11 +7,12 @@
 
 package robotlegs.bender.extensions.payloadEvents
 {
-	import robotlegs.bender.extensions.payloadEvents.impl.extraction.FieldPayloadExtractionPointTest;
-	import robotlegs.bender.extensions.payloadEvents.impl.extraction.MethodPayloadExtractionPointTest;
 	import robotlegs.bender.extensions.payloadEvents.impl.PayloadEventCommandMapIntegrationTest;
 	import robotlegs.bender.extensions.payloadEvents.impl.PayloadEventCommandTriggerTest;
-	import robotlegs.bender.extensions.payloadEvents.impl.extraction.PayloadExtractorTest;
+	import robotlegs.bender.extensions.payloadEvents.impl.execution.ExecutionReflectorTest;
+	import robotlegs.bender.extensions.payloadEvents.impl.extraction.FieldPayloadExtractionPointTest;
+	import robotlegs.bender.extensions.payloadEvents.impl.extraction.MethodPayloadExtractionPointTest;
+	import robotlegs.bender.extensions.payloadEvents.impl.extraction.PayloadReflectorTest;
 
 	[RunWith("org.flexunit.runners.Suite")]
 	[Suite]
@@ -28,10 +29,12 @@ package robotlegs.bender.extensions.payloadEvents
 
 		public var payloadEventsExtensionIntegration:PayloadEventCommandMapIntegrationTest;
 
-		public var payloadExtractor:PayloadExtractorTest;
+		public var payloadExtractor:PayloadReflectorTest;
 
 		public var fieldPayloadExtractionPoint : FieldPayloadExtractionPointTest;
 
 		public var methodPayloadExtractionPoint : MethodPayloadExtractionPointTest;
+
+		public var executionReflector : ExecutionReflectorTest;
 	}
 }

@@ -12,7 +12,9 @@ package robotlegs.bender.extensions.payloadEvents.impl
 	 */
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.commandCenter.api.ICommandExecutor;
 	import robotlegs.bender.extensions.commandCenter.api.ICommandMappingList;
 	import robotlegs.bender.extensions.commandCenter.api.ICommandTrigger;
@@ -21,9 +23,9 @@ package robotlegs.bender.extensions.payloadEvents.impl
 	import robotlegs.bender.extensions.commandCenter.impl.CommandMappingList;
 	import robotlegs.bender.extensions.commandCenter.impl.CommandPayload;
 	import robotlegs.bender.extensions.payloadEvents.api.IPayloadExtractionPoint;
-	import robotlegs.bender.framework.api.ILogger;
 	import robotlegs.bender.extensions.payloadEvents.impl.extraction.PayloadExtractionDescription;
 	import robotlegs.bender.extensions.payloadEvents.impl.extraction.PayloadReflector;
+	import robotlegs.bender.framework.api.ILogger;
 
 	public class PayloadEventCommandTrigger implements ICommandTrigger
 	{
@@ -74,9 +76,9 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		/* Public Functions                                                           */
 		/*============================================================================*/
 
-		public function createMapper():CommandMapper
+		public function createMapper():PayloadEventCommandMapper
 		{
-			return new CommandMapper(_mappings);
+			return new PayloadEventCommandMapper(_mappings);
 		}
 
 		public function activate():void

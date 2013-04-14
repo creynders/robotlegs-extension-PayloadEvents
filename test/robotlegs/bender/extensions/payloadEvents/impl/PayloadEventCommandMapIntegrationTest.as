@@ -21,7 +21,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 	import robotlegs.bender.extensions.commandCenter.dsl.ICommandMapper;
 	import robotlegs.bender.extensions.commandCenter.dsl.ICommandUnmapper;
 	import robotlegs.bender.extensions.payloadEvents.api.IPayloadEventCommandMap;
-	import robotlegs.bender.extensions.payloadEvents.support.ClassReportingCommand;
+	import robotlegs.bender.extensions.payloadEvents.support.ExecuteTaggedClassReportingMethodCommand;
 	import robotlegs.bender.extensions.payloadEvents.support.EventReportingCommand;
 	import robotlegs.bender.extensions.payloadEvents.support.ExecuteWithParametersCommand;
 	import robotlegs.bender.extensions.payloadEvents.support.InjectionPointsCommand;
@@ -83,11 +83,11 @@ package robotlegs.bender.extensions.payloadEvents.impl
 
 		[Test]
 		public function commands_are_executed() : void{
-			subject.map(SupportEvent.TYPE).toCommand(ClassReportingCommand);
+			subject.map(SupportEvent.TYPE).toCommand(ExecuteTaggedClassReportingMethodCommand);
 
 			dispatcher.dispatchEvent(new SupportEvent(SupportEvent.TYPE));
 
-			assertThat(reported,array(ClassReportingCommand));
+			assertThat(reported,array(ExecuteTaggedClassReportingMethodCommand));
 		}
 
 		[Test]
@@ -113,7 +113,7 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		}
 
 		[Test]
-		public function test_event_is_injected_when_no_payload_dispatched() : void{
+		public function event_is_injected_when_no_payload_dispatched() : void{
 			subject.map(SupportEvent.TYPE).toCommand(EventReportingCommand);
 			var event:Event = new SupportEvent(SupportEvent.TYPE);
 
@@ -123,8 +123,8 @@ package robotlegs.bender.extensions.payloadEvents.impl
 		}
 
 		[Test]
-		public function test_command_does_not_execute_when_incorrect_eventClass_dispatched() : void{
-			subject.map(SupportEvent.TYPE,Event).toCommand(ClassReportingCommand);
+		public function command_does_not_execute_when_incorrect_eventClass_dispatched() : void{
+			subject.map(SupportEvent.TYPE,Event).toCommand(ExecuteTaggedClassReportingMethodCommand);
 
 			dispatcher.dispatchEvent(new SupportEvent(SupportEvent.TYPE));
 
