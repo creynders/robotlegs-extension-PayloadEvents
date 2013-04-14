@@ -8,14 +8,14 @@
 package robotlegs.bender.extensions.payloadEvents.api
 {
 
-	public class PayloadExtractorError extends Error
+	public class PayloadReflectorError extends Error
 	{
 
 		/*============================================================================*/
 		/* Constructor                                                                */
 		/*============================================================================*/
 
-		public function PayloadExtractorError(message:* = '', id:* = 0)
+		public function PayloadReflectorError(message:* = '', id:* = 0)
 		{
 			super(message, id);
 		}

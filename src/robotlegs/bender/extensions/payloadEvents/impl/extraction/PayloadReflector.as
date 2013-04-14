@@ -13,7 +13,7 @@ package robotlegs.bender.extensions.payloadEvents.impl.extraction
 	import flex.lang.reflect.Method;
 
 	import robotlegs.bender.extensions.payloadEvents.api.IPayloadExtractionPoint;
-	import robotlegs.bender.extensions.payloadEvents.api.PayloadExtractorError;
+	import robotlegs.bender.extensions.payloadEvents.api.PayloadReflectorError;
 	import robotlegs.bender.extensions.payloadEvents.support.OrderedExtractionPointsEvent;
 	import robotlegs.bender.framework.api.ILogger;
 
@@ -72,11 +72,11 @@ package robotlegs.bender.extensions.payloadEvents.impl.extraction
 				const memberName:String = memberDescription.attribute('name');
 
 				if (memberDescription.parameter.length() > 0)
-					throw new PayloadExtractorError('Methods with parameters are not extractable ' + rawDescription.attribute('name') + '#' + memberName);
+					throw new PayloadReflectorError('Methods with parameters are not extractable ' + rawDescription.attribute('name') + '#' + memberName);
 
 				const valueType:String = memberDescription.attribute('returnType');
 				if (valueType == 'void')
-					throw new PayloadExtractorError('Methods without return type are not extractable ' + rawDescription.attribute('name') + '#' + memberName);
+					throw new PayloadReflectorError('Methods without return type are not extractable ' + rawDescription.attribute('name') + '#' + memberName);
 
 				payloadDescription.addExtractionPoint(new MethodPayloadExtractionPoint(
 					memberName,
@@ -93,7 +93,7 @@ package robotlegs.bender.extensions.payloadEvents.impl.extraction
 				const memberName:String = memberDescription.attribute('name');
 
 				if (memberDescription.hasOwnProperty('@access') && memberDescription.attribute('access') == 'writeonly')
-					throw new PayloadExtractorError('Setters are not extractable ' + rawDescription.attribute('name') + '#' + memberName);
+					throw new PayloadReflectorError('Setters are not extractable ' + rawDescription.attribute('name') + '#' + memberName);
 
 				payloadDescription.addExtractionPoint(new FieldPayloadExtractionPoint(
 					memberName,

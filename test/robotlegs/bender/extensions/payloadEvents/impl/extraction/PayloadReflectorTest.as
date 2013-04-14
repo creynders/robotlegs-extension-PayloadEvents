@@ -21,7 +21,7 @@ package robotlegs.bender.extensions.payloadEvents.impl.extraction
 	import robotlegs.bender.extensions.payloadEvents.support.OrderedExtractionPointsEvent;
 	import robotlegs.bender.framework.api.ILogger;
 
-	public class PayloadExtractorTest
+	public class PayloadReflectorTest
 	{
 
 		/*============================================================================*/
@@ -103,21 +103,21 @@ package robotlegs.bender.extensions.payloadEvents.impl.extraction
 			assertThat(point, instanceOf(MethodPayloadExtractionPoint));
 		}
 
-		[Test(expects="robotlegs.bender.extensions.payloadEvents.api.PayloadExtractorError")]
+		[Test(expects="robotlegs.bender.extensions.payloadEvents.api.PayloadReflectorError")]
 		public function setter_throws_error():void
 		{
 			subject.describeExtractionsForInstance(new ExtractSetterEvent());
 			// note: no assertion. we just want to know if an error is thrown
 		}
 
-		[Test(expects="robotlegs.bender.extensions.payloadEvents.api.PayloadExtractorError")]
+		[Test(expects="robotlegs.bender.extensions.payloadEvents.api.PayloadReflectorError")]
 		public function method_with_parameters_throws_error():void
 		{
 			subject.describeExtractionsForInstance(new ExtractMethodWithParametersEvent());
 			// note: no assertion. we just want to know if an error is thrown
 		}
 
-		[Test(expects="robotlegs.bender.extensions.payloadEvents.api.PayloadExtractorError")]
+		[Test(expects="robotlegs.bender.extensions.payloadEvents.api.PayloadReflectorError")]
 		public function method_with_void_return_type_throws_error():void
 		{
 			subject.describeExtractionsForInstance(new ExtractMethodWithVoidReturnTypeEvent());
